@@ -30,7 +30,33 @@ func aboutPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginPage(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "This is the login page\n")
+	parsedTemplate := renderTemplates(w, "loginPage2.html")
+
+	if r.Method == http.MethodPost {
+
+		login := r.FormValue("login")
+		password := r.FormValue("pass")
+
+		if login == "admin" && password == "1234" {
+			loginChecker(w, r, true)
+		} else {
+			loginChecker(w, r, false)
+		}
+	}
+
+	err := parsedTemplate.Execute(w, nil)
+	if err != nil {
+		fmt.Println("Error executing template:", err)
+	}
+
+}
+
+func loginChecker(w http.ResponseWriter, r *http.Request, login bool) {
+	if login == true {
+		io.WriteString(w, "Login successfull")
+	} else if login == false {
+		io.WriteString(w, "Login failed")
+	}
 }
 
 func logoutPage(w http.ResponseWriter, r *http.Request) {
