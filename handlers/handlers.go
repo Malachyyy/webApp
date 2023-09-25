@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"webApp/db"
 	"webApp/render"
 )
 
@@ -12,7 +13,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 	err := parsedTemplate.Execute(w, nil)
 	if err != nil {
-		fmt.Println("Error executing template:", err)
+		log.Fatal("Error executing template:", err)
 	}
 
 }
@@ -22,9 +23,27 @@ func AboutPage(w http.ResponseWriter, r *http.Request) {
 
 	err := parsedTemplate.Execute(w, nil)
 	if err != nil {
-		fmt.Println("Error executing template:", err)
+		log.Fatal("Error executing template:", err)
 	}
 
+}
+
+func SigninPage(w http.ResponseWriter, r *http.Request) {
+	parsedTemplate := render.RenderTemplates(w, "signInPage.html")
+
+	if r.Method == http.MethodPost {
+
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+		email := r.FormValue("email")
+
+		db.AddUser(username, password, email)
+	}
+
+	err := parsedTemplate.Execute(w, nil)
+	if err != nil {
+		log.Fatal("Error executing template:", err)
+	}
 }
 
 func LoginPage(w http.ResponseWriter, r *http.Request) {
@@ -32,10 +51,10 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPost {
 
-		login := r.FormValue("login")
-		password := r.FormValue("pass")
+		username := r.FormValue("username")
+		password := r.FormValue("password")
 
-		if login == "admin" && password == "1234" {
+		if username == "admin" && password == "1234" {
 			io.WriteString(w, "Login successfull")
 		} else {
 			io.WriteString(w, "Login failed")
@@ -44,7 +63,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 
 	err := parsedTemplate.Execute(w, nil)
 	if err != nil {
-		fmt.Println("Error executing template:", err)
+		log.Fatal("Error executing template:", err)
 	}
 
 }
