@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"webApp/crypt"
 
 	_ "github.com/lib/pq"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -44,7 +44,7 @@ func AddUser(username string, password string, email string) {
 	}
 	defer db.Close()
 
-	hashedPassword := HashPassword(password)
+	hashedPassword := crypt.HashPassword(password)
 
 	insertDynStmt := `INSERT INTO users (username, password, email) VALUES ($1, $2, $3)`
 	_, err = db.Exec(insertDynStmt, username, hashedPassword, email)
@@ -53,10 +53,6 @@ func AddUser(username string, password string, email string) {
 	}
 }
 
-func HashPassword(password string) string {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(bytes)
+func FindUser() {
+
 }
