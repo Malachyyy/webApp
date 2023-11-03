@@ -43,11 +43,20 @@ func SigninPage(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	email := r.FormValue("email")
 
-	err := pkg.UsernameValidator(username, password, email)
+	err := pkg.UsernameValidator(username)
 	if err != nil {
-		http.Error(w, "Couldn't validate user", http.StatusBadRequest)
+		http.Error(w, "Username doesn't meet requirements", http.StatusBadRequest)
 	}
 
+	err = pkg.PasswordValidator(password)
+	if err != nil {
+		http.Error(w, "Password doesn't meet requirements", http.StatusBadRequest)
+	}
+
+	err = pkg.EmailValidator(email)
+	if err != nil {
+		http.Error(w, "Email doesn't meet requirements", http.StatusBadRequest)
+	}
 	http.Redirect(w, r, "/login", http.StatusFound)
 
 	err = parsedTemplate.Execute(w, nil)
