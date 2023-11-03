@@ -4,7 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"webApp/pkg"
+	"webApp/functions"
 	"webApp/render"
 )
 
@@ -43,17 +43,17 @@ func SigninPage(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 	email := r.FormValue("email")
 
-	err := pkg.UsernameValidator(username)
+	err := functions.UsernameValidator(username)
 	if err != nil {
 		http.Error(w, "Username doesn't meet requirements", http.StatusBadRequest)
 	}
 
-	err = pkg.PasswordValidator(password)
+	err = functions.PasswordValidator(password)
 	if err != nil {
 		http.Error(w, "Password doesn't meet requirements", http.StatusBadRequest)
 	}
 
-	err = pkg.EmailValidator(email)
+	err = functions.EmailValidator(email)
 	if err != nil {
 		http.Error(w, "Email doesn't meet requirements", http.StatusBadRequest)
 	}
